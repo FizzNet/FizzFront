@@ -6,7 +6,7 @@ export class FrontRouteIndexElement extends LitElement {
   protected render() {
     return html`
       <div>
-        SDF
+        This is index page: "/"
       </div>
     `
   }

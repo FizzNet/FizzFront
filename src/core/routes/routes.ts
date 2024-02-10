@@ -11,6 +11,23 @@ export function createRoutes(): Route[] {
       action: async () => {
         await import("@src/components/routes/index");
       }
+    },
+    {
+      path: "/app",
+      component: "fr-route-app",
+      action: async () => {
+        await import("@src/components/routes/app/index")
+      },
+      children: [{
+        path: "/",
+        redirect: "/app/direct"
+      },{
+        path: "/direct",
+        component: "fr-route-app-direct",
+        action: async () => {
+          await import("@src/components/routes/app/direct.ts")
+        }
+      }]
     }
   ];
 }
@@ -23,6 +40,18 @@ export async function initializeRouter(element: HTMLElement): Promise<void> {
 
   _router = new Router(element);
   await _router.setRoutes(createRoutes());
+
+  // This does not work:
+  //
+  // _router.getRoutes().forEach((value) => {
+  //   value.action = (context, commands) => {
+  //     console.log(`[Routing] Entering: ${context.pathname}`)
+  //
+  //     if(value.action) {
+  //       value.action(context, commands);
+  //     }
+  //   }
+  // })
 
   console.log(`[Routing] Routes: ${_router.getRoutes().length}`);
 

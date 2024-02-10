@@ -1,4 +1,4 @@
-import {LitElement, html, PropertyValues} from 'lit'
+import {LitElement, html, PropertyValues, css} from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { Ref, createRef, ref } from 'lit/directives/ref.js';
 import {initializeRouter} from "./core/routes/routes.ts";
@@ -9,7 +9,7 @@ export class FrontMainElement extends LitElement {
   
   protected render() {
     return html`
-      <div ${ref(this.renderRef)}></div>
+      <div class="rendered" ${ref(this.renderRef)}></div>
     `
   }
 
@@ -21,6 +21,13 @@ export class FrontMainElement extends LitElement {
       initializeRouter(renderElement);
     }
   }
+
+  static styles = css`
+    .rendered {
+      width: 100%;
+      height: 100%;
+    }
+  `
 }
 
 declare global {
