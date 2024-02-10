@@ -1,3 +1,5 @@
 :root {
-  --prompt-height: 50px;
+  --prompt-height: 60px;
+  --prompt-area-padding: 10px;
+  --prompt-container-border-radius: 25px;
 }

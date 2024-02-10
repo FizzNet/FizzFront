@@ -23,6 +23,13 @@ export class FrontMainElement extends LitElement {
   }
 
   static styles = css`
+    :host {
+      width: 100vw;
+      height: 100vh;
+      
+      overflow: hidden;
+    }
+    
     .rendered {
       width: 100%;
       height: 100%;

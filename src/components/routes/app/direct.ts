@@ -10,7 +10,9 @@ export class FrontRouteAppDirectElement extends LitElement {
           
         </div>
         <div class="prompt_area">
-          <input type="text" class="prompt">
+          <div class="prompt_container">
+            <input type="text" class="prompt">
+          </div>
         </div>
       </div>
     `
@@ -28,12 +30,30 @@ export class FrontRouteAppDirectElement extends LitElement {
     }
     
     .prompt_area {
-      width: 100%;
-      height: var(--prompt-height);
+      height: calc(var(--prompt-height) - 2 * var(--prompt-area-padding));
+      
+      padding: var(--prompt-area-padding);
+    }
+    
+    .prompt_container {
+      height: 100%;
+      
+      background-color: cyan;
+      
+      border-radius: var(--prompt-container-border-radius);
     }
     
     .prompt {
+      border: 0;
       
+      width: calc(100% - 50px);
+      height: 30px;
+      margin: 1px 1px 1px 1px;
+      background-color: blue;
+    }
+    
+    .prompt:focus {
+      outline: none!important;
     }
   `
 }
