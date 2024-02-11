@@ -4,3 +4,15 @@
     background-color: #ffffff;
   }
 }
+
+:root {
+  /*--c-theme-primary: #E1F0DA;*/
+  /*--c-theme-secondary: #D4E7C5;*/
+  /*--c-theme-tertiary: #BFD8AF;*/
+  /*--c-theme-quaternary: #99BC85;*/
+
+  --c-theme-primary: #F5EEE6;
+  --c-theme-secondary: #FFF8E3;
+  --c-theme-tertiary: #F3D7CA;
+  --c-theme-quaternary: #E6A4B4;
+}
