@@ -7,6 +7,9 @@ export class FrontRouteAppDirectElement extends LitElement {
   private createActionTemplate() {
     return html`
       <div class="prompt_action">
+        <div class="prompt_action_display">
+          <span class="material-symbols-outlined">search</span>
+        </div>
       </div>
     `
   }
@@ -21,6 +24,7 @@ export class FrontRouteAppDirectElement extends LitElement {
           <div class="prompt_box">
             <div class="prompt_container">
               <input type="text" class="prompt">
+              <div class="prompt_divider"></div>
               ${this.createActionTemplate()}
             </div>
           </div>
@@ -56,8 +60,10 @@ export class FrontRouteAppDirectElement extends LitElement {
 
       color: black;
       background-color: var(--c-theme-primary);
-
-      border-radius: var(--prompt-container-border-radius);
+      
+      margin-right: calc(var(--prompt-area-padding) * -1);
+      
+      border-radius: var(--prompt-container-border-radius) 0 0 var(--prompt-container-border-radius);
     }
 
     .prompt_container {
@@ -84,9 +90,29 @@ export class FrontRouteAppDirectElement extends LitElement {
       //background-color: red;
       background-color: transparent;
     }
+    
+    .prompt_divider {
+      width: 2px;
+      height: 100%;
+      background-color: lightgray;
+    }
 
     .prompt_action {
       width: calc(var(--prompt-height) - var(--prompt-area-padding) * 2);
+    }
+    
+    .prompt_action:hover .prompt_action_display {
+      background-color: rgba(128, 128, 128, 30%);
+    }
+    
+    .prompt_action_display {
+      border-radius: 50%;
+      
+      width: 80%;
+      height: 80%;
+      margin: 10%;
+      
+      transition: background-color 0.1s;
     }
 
     .prompt:focus {
