@@ -25,9 +25,46 @@ export function createRoutes(): Route[] {
         path: "/direct",
         component: "fr-route-app-direct",
         action: async () => {
-          await import("@src/components/routes/app/direct.ts")
+          await import("@src/components/routes/app/direct")
         }
       }]
+    },
+    {
+      path: "/auth",
+      children: [{
+        path: "/user",
+        component: "fr-route-auth-user",
+        action: async () => {
+          await import("@src/components/routes/auth/user/index")
+        },
+        children: [{
+          path: "signin",
+          component: "fr-route-auth-user-signin",
+          action: async () => {
+            await import("@src/components/routes/auth/user/signin")
+          }
+        }, {
+          path: "signup",
+          component: "fr-route-auth-user-signup",
+          action: async () => {
+            await import("@src/components/routes/auth/user/signup")
+          }
+        }],
+      }]
+    },
+    {
+      path: "/test",
+      component: "fr-route-test",
+      action: async () => {
+        await import("@src/components/routes/test")
+      }
+    },
+    {
+      path: "(.*)",
+      component: "fr-route-common-not-found",
+      action: async () => {
+        await import("@routes/error/not_found")
+      }
     }
   ];
 }

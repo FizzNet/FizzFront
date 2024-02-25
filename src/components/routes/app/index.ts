@@ -2,7 +2,7 @@ import {customElement} from "lit/decorators.js";
 import {html, LitElement} from "lit";
 
 @customElement("fr-route-app")
-export class FrontRouteAppElement extends LitElement {
+export class FrontRouteAppView extends LitElement {
   protected render(): unknown {
     return html`
       <slot></slot>
@@ -12,6 +12,6 @@ export class FrontRouteAppElement extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "fr-route-app": FrontRouteAppElement
+    "fr-route-app": FrontRouteAppView
   }
 }

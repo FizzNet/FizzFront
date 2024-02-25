@@ -2,7 +2,7 @@ import {customElement} from "lit/decorators.js";
 import {css, html, LitElement} from "lit";
 
 @customElement("fr-route-app-direct")
-export class FrontRouteAppDirectElement extends LitElement {
+export class FrontRouteAppDirectView extends LitElement {
 
   private createActionTemplate() {
     return html`

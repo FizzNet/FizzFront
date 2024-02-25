@@ -2,7 +2,7 @@ import {html, LitElement} from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("fr-route-index")
-export class FrontRouteIndexElement extends LitElement {
+export class FrontRouteIndexView extends LitElement {
   protected render() {
     return html`
       <div>
@@ -14,6 +14,6 @@ export class FrontRouteIndexElement extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "fr-route-index": FrontRouteIndexElement
+    "fr-route-index": FrontRouteIndexView
   }
 }

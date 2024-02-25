@@ -1,18 +1,36 @@
+@import "./themes/index.css";
+
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --c: #213547;
+    --bc: #ffffff;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c: white;
+    --bc: #3d3d3d;
   }
 }
 
 :root {
-  /*--c-theme-primary: #E1F0DA;*/
-  /*--c-theme-secondary: #D4E7C5;*/
-  /*--c-theme-tertiary: #BFD8AF;*/
-  /*--c-theme-quaternary: #99BC85;*/
+  color: var(--c);
+  background-color: var(--bc);
 
-  --c-theme-primary: #F5EEE6;
-  --c-theme-secondary: #FFF8E3;
-  --c-theme-tertiary: #F3D7CA;
-  --c-theme-quaternary: #E6A4B4;
+  --c-theme-primary: #E1F0DA;
+  --c-theme-secondary: #D4E7C5;
+  --c-theme-tertiary: #BFD8AF;
+  --c-theme-quaternary: #99BC85;
+
+  --c-theme-primary2: #C5FFF8;
+  --c-theme-secondary2: #96EFFF;
+  --c-theme-tertiary2: #5FBDFF;
+  --c-theme-quaternary2: #7B66FF;
+
+  /* This palette sucks */
+  /*--c-theme-primary: #F5EEE6;*/
+  /*--c-theme-secondary: #FFF8E3;*/
+  /*--c-theme-tertiary: #F3D7CA;*/
+  /*--c-theme-quaternary: #E6A4B4;*/
 }

@@ -1,0 +1,16 @@
+:root {
+  --e-button-primary1: var(--c-theme-primary);
+  --e-button-secondary1: var(--c-theme-quaternary);
+
+  --e-button-primary2: var(--c-theme-tertiary2);
+  --e-button-secondary2: var(--c-theme-quaternary2);
+
+  --e-button-primary3: var(--c-theme-secondary);
+  --e-button-secondary3: var(--c-theme-tertiary);
+
+  --e-text-field-primary1: var(--c-theme-primary);
+  --e-text-field-secondary1: var(--c-theme-tertiary);
+
+  --e-text-field-primary2: var(--c-theme-primary2);
+  --e-text-field-secondary2: var(--c-theme-tertiary2);
+}
