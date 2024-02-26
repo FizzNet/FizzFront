@@ -1,12 +1,24 @@
 import {LitElement, html, css, PropertyValues} from "lit";
-import {customElement, query, state} from "lit/decorators.js";
+import {customElement, property, query, state} from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import {Number2} from "@src/util/math/type.ts";
 import {Draw} from "@src/util/draw/rect_cursor_provider.ts";
 import InterpolatedRectCursorProvider = Draw.InterpolatedRectCursorProvider;
-@customElement("fr-form")
-export class FrontFormTemplate extends LitElement {
 
+declare global {
+  interface HTMLElementEventMap {
+    "stage": FrontFormStageEvent
+  }
+}
+
+export type FrontFormStageEvent = {
+  from: number,
+  to: number
+  direction: "left" | "right"
+};
+
+@customElement("fr-form")
+export class FrontFormElement extends LitElement {
   private _rectCursorProvider = new InterpolatedRectCursorProvider(
     (position) => {
       this._gradientOffset = position;
@@ -25,6 +37,9 @@ export class FrontFormTemplate extends LitElement {
 
   @query(".box")
   private queryBox!: HTMLDivElement;
+
+  @property({ type: Number })
+  public stage = 0;
 
   protected render(): unknown {
     return html`
@@ -49,6 +64,10 @@ export class FrontFormTemplate extends LitElement {
             <slot name="main"></slot>
           </div>
           
+          <div class="stages">
+            <slot name="stages"></slot>
+          </div>
+          
           <div class="divider"></div>
           
           <div class="action">
@@ -65,6 +84,19 @@ export class FrontFormTemplate extends LitElement {
     this._rectCursorProvider.create(this.queryBox);
   }
 
+  protected updated(_changedProperties: PropertyValues) {
+    super.updated(_changedProperties);
+
+    if(_changedProperties.has("stage")) {
+      this.dispatchEvent(new CustomEvent<FrontFormStageEvent>("stage", {
+        detail: {
+          from: _changedProperties.get("stage"),
+          to: this.stage
+        }
+      }));
+    }
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
 
@@ -73,7 +105,7 @@ export class FrontFormTemplate extends LitElement {
 
   static styles = css`
     .box {
-      padding: 20px;
+      padding: 50px;
 
       border-radius: 20px;
 
@@ -160,7 +192,7 @@ export class FrontFormTemplate extends LitElement {
       width: 100%;
       height: 1px;
 
-      margin: 10px 0;
+      margin: 20px 0;
 
       background-color: dimgray;
 
@@ -189,6 +221,6 @@ export class FrontFormTemplate extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "fr-form": FrontFormTemplate
+    "fr-form": FrontFormElement
   }
 }
