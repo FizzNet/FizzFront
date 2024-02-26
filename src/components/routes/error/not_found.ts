@@ -27,6 +27,7 @@ export class FrontRouteErrorNotFoundView extends LitElement {
     `
   }
 
+  // noinspection CssUnusedSymbol
   static styles = css`
     .root {
       position: absolute;

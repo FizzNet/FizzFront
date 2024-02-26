@@ -1,4 +1,4 @@
-import {customElement, property, state} from "lit/decorators.js";
+import {customElement, property} from "lit/decorators.js";
 import {html, LitElement} from "lit";
 import {FrontFormElement, FrontFormStageEvent} from "@comps/template/form.ts";
 
@@ -26,7 +26,7 @@ export class FrontFormStageElement extends LitElement {
     this._formElement.addEventListener("stage", this.handleStage);
   }
 
-  private handleStage(event: FrontFormStageEvent) {
+  private handleStage() {
 
   }
 }
