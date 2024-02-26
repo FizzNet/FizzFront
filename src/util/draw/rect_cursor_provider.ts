@@ -12,6 +12,8 @@ export namespace Draw {
       return { x: 0, y: 0 }
     };
 
+    public minimumDiffToUpdate = 1;
+
     private _origin!: [number, number];
     private _offset: [number, number] = [0, 0];
     private _targetOffset: [number, number] = this._origin;
@@ -58,10 +60,26 @@ export namespace Draw {
       const x = Math.lerp(this._offset[0], this._targetOffset[0], this.interpolation);
       const y = Math.lerp(this._offset[1], this._targetOffset[1], this.interpolation);
 
-      this._offset = [x, y];
-      this.callUpdate();
-
+      this.updateAuto([x, y])
       this._requestedFrameId = requestAnimationFrame(this.animateOffset.bind(this));
+    }
+
+    private updateAuto(newOffset: [number, number]) {
+      const [diffX, diffY] = this.calculateDiff(this._offset, newOffset);
+
+      this._offset = newOffset;
+
+      if(diffX > this.minimumDiffToUpdate || diffY > this.minimumDiffToUpdate) {
+        // Update
+        this.callUpdate();
+      }
+    }
+
+    private calculateDiff(p1: [number, number], p2: [number, number]) {
+      const diffX = Math.abs(p1[0] - p2[0]);
+      const diffY = Math.abs(p1[1] - p2[1]);
+
+      return [diffX, diffY];
     }
 
     private handleMouseMove(e: MouseEvent) {
