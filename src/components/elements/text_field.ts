@@ -59,7 +59,7 @@ export class FrontTextField extends LitElement {
       appearance: none;
       outline: none;
       
-      font-size: 1.5em;
+      font-size: 1.2em;
       
       padding: 15px 20px;
       
@@ -85,7 +85,7 @@ export class FrontTextField extends LitElement {
     .label {
       background: var(--primary);
       
-      padding: 0 10px 0 20px;
+      padding: 0 20px;
       
       display: flex;
       align-items: center;
