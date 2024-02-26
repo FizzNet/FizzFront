@@ -1,39 +1,54 @@
-import {customElement} from "lit/decorators.js";
+import {customElement, state} from "lit/decorators.js";
 import {css, html, LitElement} from "lit";
 import "@comps/template/form.ts";
+import "@comps/template/form_stage.ts";
 import "@comps/util/background.ts";
 import "@comps/elements/button";
 import "@comps/elements/text_field.ts";
-import {router} from "@src/core/router/routes.ts";
+import {Router} from "@lit-labs/router";
 
 @customElement("fr-route-auth-user-signup")
 export class FrontRouteAuthSignUpView extends LitElement {
+  @state()
+  private _stage = 0;
+
   protected render(): unknown {
     return html`
       <div class="root">
-        <fr-form class="form">
+        <fr-form class="form" stage=${this._stage}>
           <span slot="title">Sign up</span>
           <span slot="description">In a minute</span>
           
-          <div slot="main">
-            <fr-text-field
-                primary="var(--e-text-field-primary2)"
-                secondary="var(--e-text-field-secondary2)"
-                
-                label="Email"
-            ></fr-text-field>
+          <div slot="stages">
+            <fr-form-stage>
+              <fr-text-field
+                  primary="var(--e-text-field-primary2)"
+                  secondary="var(--e-text-field-secondary2)"
+
+                  label="Email"
+              ></fr-text-field>
+            </fr-form-stage>
           </div>
+          
           <div class="actions" slot="action">
             <fr-button
                 class="action-signin"
                 primary="var(--e-button-primary3)"
                 secondary="var(--e-button-secondary3)"
                 
-                @click=${() => router().render("/")}
+                @click=${() => Router.root().navigate("/auth/user/signin")}
             >
               Sign In
             </fr-button>
-            <fr-button class="action-next" primary="var(--e-button-primary2)" secondary="var(--e-button-secondary2)">
+            <fr-button
+                class="action-next"
+                primary="var(--e-button-primary2)" 
+                secondary="var(--e-button-secondary2)"
+                
+                @click=${() => {
+                  this._stage = 1;
+                }}
+            >
               Next
             </fr-button>
           </div>

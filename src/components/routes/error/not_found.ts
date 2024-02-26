@@ -3,8 +3,8 @@ import {css, html, LitElement} from "lit";
 import "@comps/util/background.ts";
 
 
-@customElement("fr-route-common-not-found")
-export class FrontRouteCommonNotFoundView extends LitElement {
+@customElement("fr-route-error-not-found")
+export class FrontRouteErrorNotFoundView extends LitElement {
   protected render(): unknown {
     return html`
       <div class="root">
@@ -177,6 +177,6 @@ export class FrontRouteCommonNotFoundView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "fr-route-common-not-found": FrontRouteCommonNotFoundView
+    "fr-route-error-not-found": FrontRouteErrorNotFoundView
   }
 }

@@ -1,28 +1,28 @@
 import {LitElement, html, PropertyValues, css} from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { Ref, createRef, ref } from 'lit/directives/ref.js';
-import {initializeRouter} from "./core/router/routes.ts";
-
-import "@routes/auth/user/signup.ts";
+import { Router } from '@lit-labs/router';
+import {createMainRoutes} from "@src/core/router/routes.ts";
 
 @customElement("fr-main")
 export class FrontMainElement extends LitElement {
-  renderRef: Ref<HTMLInputElement> = createRef();
-  
+  public static instance: FrontMainElement;
+
+  public router = new Router(this, createMainRoutes());
+
+  constructor() {
+    super();
+
+    FrontMainElement.instance = this;
+  }
+
   protected render() {
     return html`
-<!--      <fr-route-auth-user-signup></fr-route-auth-user-signup>-->
-      <div class="rendered" ${ref(this.renderRef)}></div>
+      <div class="rendered">${this.router.outlet()}</div>
     `
   }
 
   protected firstUpdated(_changedProperties: PropertyValues) {
     super.firstUpdated(_changedProperties);
-
-    const renderElement = this.renderRef.value;
-    if(renderElement) {
-      initializeRouter(renderElement);
-    }
   }
 
   static styles = css`

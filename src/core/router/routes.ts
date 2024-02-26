@@ -1,101 +1,45 @@
-import {Route, Router} from "@vaadin/router";
+import {RouteConfig} from "@lit-labs/router";
+import {html} from "lit";
 
-let isRouterInitialized = false;
-let _router: Router;
-
-export function createRoutes(): Route[] {
-  return [
-    {
-      path: "/",
-      component: "fr-route-index",
-      action: async () => {
-        await import("@src/components/routes/index");
-      }
-    },
-    {
-      path: "/app",
-      component: "fr-route-app",
-      action: async () => {
-        await import("@src/components/routes/app/index")
-      },
-      children: [{
-        path: "/",
-        redirect: "/app/direct"
-      },{
-        path: "/direct",
-        component: "fr-route-app-direct",
-        action: async () => {
-          await import("@src/components/routes/app/direct")
-        }
-      }]
-    },
-    {
-      path: "/auth",
-      children: [{
-        path: "/user",
-        component: "fr-route-auth-user",
-        action: async () => {
-          await import("@src/components/routes/auth/user/index")
-        },
-        children: [{
-          path: "signin",
-          component: "fr-route-auth-user-signin",
-          action: async () => {
-            await import("@src/components/routes/auth/user/signin")
-          }
-        }, {
-          path: "signup",
-          component: "fr-route-auth-user-signup",
-          action: async () => {
-            await import("@src/components/routes/auth/user/signup")
-          }
-        }],
-      }]
-    },
-    {
-      path: "/test",
-      component: "fr-route-test",
-      action: async () => {
-        await import("@src/components/routes/test")
-      }
-    },
-    {
-      path: "(.*)",
-      component: "fr-route-common-not-found",
-      action: async () => {
-        await import("@routes/error/not_found")
-      }
+export function createMainRoutes(): RouteConfig[] {
+  return [{
+    path: "/auth/user/*",
+    render: () => html`<fr-route-auth-user></fr-route-auth-user>`,
+    enter: async () => {
+      await import("@routes/auth/user");
+      return true;
     }
-  ];
+  }, {
+    path: "/app/direct",
+    render: () => html`<fr-route-app-direct></fr-route-app-direct>`,
+    enter: async () => {
+      await import("@routes/app/direct");
+      return true;
+    }
+  }, {
+    path: "/*",
+    render: () => html`<fr-route-error-not-found></fr-route-error-not-found>`,
+    enter: async () => {
+      await import("@routes/error/not_found");
+      return true;
+    }
+  }];
 }
 
-export async function initializeRouter(element: HTMLElement): Promise<void> {
-  if(isRouterInitialized) return;
-
-  console.log("[Routing] Initializing router for first time");
-  console.log(`[Routing] Using element: ${element}`);
-
-  _router = new Router(element);
-  await _router.setRoutes(createRoutes());
-
-  // This does not work:
-  //
-  // _router.getRoutes().forEach((value) => {
-  //   value.action = (context, commands) => {
-  //     console.log(`[Routing] Entering: ${context.pathname}`)
-  //
-  //     if(value.action) {
-  //       value.action(context, commands);
-  //     }
-  //   }
-  // })
-
-  console.log(`[Routing] Routes: ${_router.getRoutes().length}`);
-
-  console.log("[Routing] Initialized!");
-  isRouterInitialized = true;
-}
-
-export function router() {
-  return _router;
+export function createAuthUserRoutes(): RouteConfig[] {
+  return [{
+    path: "signin",
+    render: () => html`<fr-route-auth-user-signin></fr-route-auth-user-signin>`,
+    enter: async () => {
+      await import("@routes/auth/user/signin");
+      return true;
+    }
+  }, {
+    path: "signup",
+    render: () => html`<fr-route-auth-user-signup></fr-route-auth-user-signup>`,
+    enter: async () => {
+      await import("@routes/auth/user/signup");
+      return true;
+    }
+  }];
 }
