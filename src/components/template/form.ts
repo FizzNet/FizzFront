@@ -41,6 +41,9 @@ export class FrontFormElement extends LitElement {
   @property({ type: Number })
   public stage = 0;
 
+  @property({ type: Number })
+  public transitionDuration = 1000;
+
   protected render(): unknown {
     return html`
       <div class="root">
@@ -88,10 +91,17 @@ export class FrontFormElement extends LitElement {
     super.updated(_changedProperties);
 
     if(_changedProperties.has("stage")) {
+      const from = _changedProperties.get("stage");
+      if(from == undefined) {
+        // Initial emission, cancel it
+        return;
+      }
+      const to = this.stage;
       this.dispatchEvent(new CustomEvent<FrontFormStageEvent>("stage", {
         detail: {
-          from: _changedProperties.get("stage"),
-          to: this.stage
+          from: from,
+          to: to,
+          direction: from < to ? "right" : "left"
         }
       }));
     }
