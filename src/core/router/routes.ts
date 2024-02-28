@@ -17,6 +17,13 @@ export function createMainRoutes(): RouteConfig[] {
       return true;
     }
   }, {
+    path: "/test",
+    render: () => html`<fr-route-test></fr-route-test>`,
+    enter: async () => {
+      await import("@routes/test");
+      return true;
+    }
+  }, {
     path: "/*",
     render: () => html`<fr-route-error-not-found></fr-route-error-not-found>`,
     enter: async () => {

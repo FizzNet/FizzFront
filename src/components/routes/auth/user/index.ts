@@ -11,7 +11,7 @@ export class FrontRouteAuthUserView extends LitElement {
   protected render(): unknown {
     return html`
       ${this.routes.outlet()}
-      <fr-background class="background"></fr-background>
+<!--      <fr-background class="background"></fr-background>-->
     `
   }
 }

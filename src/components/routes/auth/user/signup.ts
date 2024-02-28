@@ -25,15 +25,7 @@ export class FrontRouteAuthSignUpView extends LitElement {
                   primary="var(--e-text-field-primary2)"
                   secondary="var(--e-text-field-secondary2)"
 
-                  label="Email"
-              ></fr-text-field>
-            </fr-form-stage>
-            <fr-form-stage stage=${1}>
-              <fr-text-field
-                  primary="var(--e-text-field-primary2)"
-                  secondary="var(--e-text-field-secondary2)"
-
-                  label="EmaAil"
+                  label="a"
               ></fr-text-field>
             </fr-form-stage>
           </div>

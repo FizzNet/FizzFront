@@ -4,10 +4,13 @@ import { styleMap } from "lit/directives/style-map.js";
 import {Number2} from "@src/util/math/type.ts";
 import {Draw} from "@src/util/draw/rect_cursor_provider.ts";
 import InterpolatedRectCursorProvider = Draw.InterpolatedRectCursorProvider;
+import {FrontFormStageElement} from "@comps/template/form_stage.ts";
+import {classMap} from "lit/directives/class-map.js";
+import {AnimationFrame} from "@src/util/animation/animation_frame.ts";
 
 declare global {
   interface HTMLElementEventMap {
-    "stage": FrontFormStageEvent
+    "stage": CustomEvent<FrontFormStageEvent>
   }
 }
 
@@ -32,21 +35,40 @@ export class FrontFormElement extends LitElement {
     0.1
   );
 
+  private _stagesContainerSizeAnimator = new AnimationFrame(this.updateStagesContainerSize.bind(this));
+
+  private _stageMap: Record<number, FrontFormStageElement> = {};
+
   @state()
   private _gradientOffset: Number2 = { x: 0, y: 0 };
 
-  @query(".box")
-  private queryBox!: HTMLDivElement;
+  @state()
+  private _stageSize?: Number2 = undefined;
+
+  @state()
+  private _loading = false;
+
+  @property()
+  public loading = false;
 
   @property({ type: Number })
   public stage = 0;
 
   @property({ type: Number })
-  public transitionDuration = 1000;
+  public transitionDuration = 500;
+
+  // Queries
+  @query(".box")
+  private queryBox!: HTMLDivElement;
+
+  @query(".stages > slot")
+  private queryStagesSlot!: HTMLSlotElement;
 
   protected render(): unknown {
     return html`
-      <div class="root">
+      <div class="root" style=${styleMap({
+        "--transition-duration": `${this.transitionDuration}ms`
+      })}>
         <div
             class="box"
             style=${styleMap({
@@ -67,13 +89,19 @@ export class FrontFormElement extends LitElement {
             <slot name="main"></slot>
           </div>
           
-          <div class="stages">
-            <slot name="stages"></slot>
+          <div class="stages ${classMap({
+            "loading": this.loading || this._loading
+          })}" style=${styleMap({
+            "height": `${this._stageSize ? `${this._stageSize.y}px` : `auto`}`
+          })}>
+            <slot name="stages" @slotchange=${this.handleStagesSlotChange.bind(this)}></slot>
           </div>
           
           <div class="divider"></div>
           
-          <div class="action">
+          <div class="action ${classMap({
+            "loading": this.loading || this._loading
+          })}"">
             <slot name="action"></slot>
           </div>
         </div>
@@ -85,6 +113,9 @@ export class FrontFormElement extends LitElement {
     super.firstUpdated(_changedProperties);
 
     this._rectCursorProvider.create(this.queryBox);
+    this._stagesContainerSizeAnimator.request();
+
+    this.updateStagesMap();
   }
 
   protected updated(_changedProperties: PropertyValues) {
@@ -97,13 +128,8 @@ export class FrontFormElement extends LitElement {
         return;
       }
       const to = this.stage;
-      this.dispatchEvent(new CustomEvent<FrontFormStageEvent>("stage", {
-        detail: {
-          from: from,
-          to: to,
-          direction: from < to ? "right" : "left"
-        }
-      }));
+
+      this.updateStage(from, to);
     }
   }
 
@@ -111,11 +137,54 @@ export class FrontFormElement extends LitElement {
     super.disconnectedCallback();
 
     this._rectCursorProvider.destroy();
+    this._stagesContainerSizeAnimator.cancel();
+  }
+
+  private updateStage(from: number, to: number) {
+    this.dispatchEvent(new CustomEvent<FrontFormStageEvent>("stage", {
+      detail: {
+        from: from,
+        to: to,
+        direction: from < to ? "right" : "left"
+      }
+    }));
+
+    this._loading = true;
+    setTimeout(() => {
+      this._loading = false;
+    }, this.transitionDuration);
+  }
+
+  private updateStagesContainerSize() {
+    const element = this._stageMap[this.stage];
+    this._stageSize = {
+      x: element.offsetWidth,
+      y: element.offsetHeight
+    };
+
+    this._stagesContainerSizeAnimator.request();
+  }
+
+  private handleStagesSlotChange() {
+    this.updateStagesMap()
+  }
+
+  private updateStagesMap() {
+    const map: Record<number, FrontFormStageElement> = {};
+    for (const element of this.queryStagesSlot.assignedElements()[0].children) {
+      if(element instanceof FrontFormStageElement) {
+        map[element.stage] = element;
+      }
+    }
+
+    this._stageMap = map;
   }
 
   static styles = css`
     .box {
-      padding: 50px;
+      --box-padding: 50px;
+      
+      padding: var(--box-padding);
 
       border-radius: 20px;
 
@@ -126,14 +195,13 @@ export class FrontFormElement extends LitElement {
 
       animation: box-enter 500ms;
 
-      perspective: 500px;
-
       transition: background 1s;
     }
 
     @keyframes box-enter {
       0% {
-        scale: 1.5;
+        scale: 0.9;
+        opacity: 0;
         filter: blur(10px);
       }
 
@@ -196,6 +264,28 @@ export class FrontFormElement extends LitElement {
         rotate: 0deg 0 0 0;
         scale: 1;
       }
+    }
+    
+    .stages {
+      transition: all 500ms, filter 200ms;
+      
+      position: relative;
+      
+      animation: stages-enter 500ms;
+    }
+    
+    .stages.loading {
+      filter: blur(10px);
+      
+      overflow: clip;
+    }
+    
+    .action {
+      transition: filter 150ms;
+    }
+    
+    .action.loading {
+      filter: blur(10px);
     }
 
     .divider {

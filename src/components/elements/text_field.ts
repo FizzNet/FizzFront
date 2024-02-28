@@ -50,6 +50,9 @@ export class FrontTextField extends LitElement {
   static styles = css`
     #root {
       display: flex;
+      
+      width: fit-content;
+      height: fit-content;
     }
     
     #input {
@@ -58,6 +61,8 @@ export class FrontTextField extends LitElement {
       border: none;
       appearance: none;
       outline: none;
+      
+      width: 250px;
       
       font-size: 1.2em;
       
@@ -79,7 +84,7 @@ export class FrontTextField extends LitElement {
     }
     
     #root:has(.label) #input {
-      border-radius: 0 15px 15px 0;
+      border-radius: 0 100px 100px 0;
     }
     
     .label {
@@ -88,9 +93,13 @@ export class FrontTextField extends LitElement {
       padding: 0 20px;
       
       display: flex;
+      justify-content: center;
       align-items: center;
       
-      border-radius: 15px 0 0 15px;
+      border-radius: 100px 0 0 100px;
+      border-collapse: collapse;
+      
+      min-width: 60px;
       
       color: transparent;
     }
