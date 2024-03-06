@@ -3,6 +3,7 @@ import {css, html, LitElement} from "lit";
 import {FrontFormElement, FrontFormStageEvent} from "@comps/template/form.ts";
 import { classMap } from "lit/directives/class-map.js";
 import {styleMap} from "lit/directives/style-map.js";
+import "@src/util/element.ts";
 
 @customElement("fr-form-stage")
 export class FrontFormStageElement extends LitElement {
@@ -26,11 +27,7 @@ export class FrontFormStageElement extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    const formElement = this.closest("fr-form");
-    if(!formElement)
-      throw Error("`fr-form-stage` must be inside `fr-form` element")
-
-    this._formElement = formElement;
+    this._formElement = this.requireParent("fr-form");
     this._formElement.addEventListener("stage", this.handleStage.bind(this));
 
     if(this._formElement.stage == this.stage) {
@@ -80,17 +77,22 @@ export class FrontFormStageElement extends LitElement {
       //--timing-function: cubic-bezier(0, 0, 0, 0.);
       --timing-function: cubic-bezier(0.39,0.57,0.56,1);;
       //--timing-function: cubic-bezier(0.68, -0.55, 0.27, 1);
+      
+      width: min-content;
+      height: min-content;
+      
+      display: block;
     }
     
     .container {
       display: none;
-      
-      width: auto;
-      height: auto;
     }
     
     .current {
       display: block;
+      
+      width: min-content;
+      height: min-content;
       
       transform: none;
     }

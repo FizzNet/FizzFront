@@ -4,26 +4,18 @@ import {Draw} from "@src/util/draw/rect_cursor_provider.ts";
 import {Number2} from "@src/util/math/type.ts";
 import {styleMap} from "lit/directives/style-map.js";
 import {Interpolation} from "@src/util/math/interpolation.ts";
+import {classMap} from "lit/directives/class-map.js";
 
 @customElement("fr-button")
 export class FrontButtonElement extends LitElement {
-  @property()
-  public primary = "var(--e-button-primary1)";
+  @property() public primary = "var(--e-button-primary1)";
+  @property() public secondary = "var(--e-button-quaternary1)";
+  @property({ type: Boolean }) public disabled = false;
 
-  @property()
-  public secondary = "var(--e-button-quaternary1)";
+  @query("#root") private _queryElement!: HTMLButtonElement;
 
-  @property({ type: Number })
-  public expandStop = 500;
-
-  @query("#root")
-  private _queryElement!: HTMLButtonElement;
-
-  @state()
-  private _gradientOffset: Number2 = { x: 0, y: 0 };
-
-  @state()
-  private _gradientOuterPosition = 100;
+  @state() private _gradientOffset: Number2 = { x: 0, y: 0 };
+  @state() private _gradientOuterPosition = 100;
 
   private _rectCursorProvider = new Draw.InterpolatedRectCursorProvider(
     (position) => {
@@ -38,7 +30,6 @@ export class FrontButtonElement extends LitElement {
     0.1
   );
 
-
   private _gradientSecondPositionInterpolator = Interpolation.animatedLinearNumber(
     this._gradientOuterPosition,
     this._gradientOuterPosition,
@@ -49,6 +40,9 @@ export class FrontButtonElement extends LitElement {
     return html`
       <button
           id="root"
+          class=${classMap({
+            "disabled": this.disabled
+          })}
           style=${styleMap({
             "--gradient-offset": `${this._gradientOffset.x}px ${this._gradientOffset.y}px`,
             "--gradient-primary": `${this.primary}`,
@@ -59,6 +53,8 @@ export class FrontButtonElement extends LitElement {
           @mouseenter=${this.expandGradient.bind(this)}
           @mouseup=${this.shrunkGradient.bind(this)}
           @mouseleave=${this.shrunkGradient.bind(this)}
+          
+          ?disabled=${this.disabled}
       >
         <slot></slot>
       </button>
@@ -81,7 +77,7 @@ export class FrontButtonElement extends LitElement {
   private expandGradient(e: MouseEvent) {
     // [1] Primary button
     if(e.buttons & 1) {
-      this._gradientSecondPositionInterpolator.target = this.expandStop;
+      this._gradientSecondPositionInterpolator.target = 500;
     }
   }
 
@@ -107,7 +103,7 @@ export class FrontButtonElement extends LitElement {
 
       background: radial-gradient(circle at var(--gradient-offset), var(--gradient-primary), var(--gradient-secondary) var(--gradient-secondary-stop));
 
-      transition: all 0.25s;
+      transition: all 0.25s, border 0.5s, background 0.5s;
 
       user-select: none;
       
@@ -120,6 +116,13 @@ export class FrontButtonElement extends LitElement {
     
     #root:active {
       box-shadow: 0 0 10px 1px var(--gradient-primary);
+    }
+    
+    #root:disabled {
+      pointer-events: none;
+
+      border: 2px solid gray;
+      background: darkgray;
     }
   `
 

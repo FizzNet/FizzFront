@@ -6,7 +6,7 @@ import {Draw} from "@src/util/draw/rect_cursor_provider.ts";
 import InterpolatedRectCursorProvider = Draw.InterpolatedRectCursorProvider;
 import {FrontFormStageElement} from "@comps/template/form_stage.ts";
 import {classMap} from "lit/directives/class-map.js";
-import {AnimationFrame} from "@src/util/animation/animation_frame.ts";
+import {AnimationFrame} from "@src/util/animation_frame.ts";
 
 declare global {
   interface HTMLElementEventMap {
@@ -37,7 +37,7 @@ export class FrontFormElement extends LitElement {
 
   private _stagesContainerSizeAnimator = new AnimationFrame(this.updateStagesContainerSize.bind(this));
 
-  private _stageMap: Record<number, FrontFormStageElement> = {};
+  public stageMap: Record<number, FrontFormStageElement> = {};
 
   @state()
   private _gradientOffset: Number2 = { x: 0, y: 0 };
@@ -92,17 +92,10 @@ export class FrontFormElement extends LitElement {
           <div class="stages ${classMap({
             "loading": this.loading || this._loading
           })}" style=${styleMap({
-            "height": `${this._stageSize ? `${this._stageSize.y}px` : `auto`}`
+            "height": `${this._stageSize ? `${this._stageSize.y}px` : `auto`}`,
+            "width": `${this._stageSize ? `${this._stageSize.x}px` : `auto`}`,
           })}>
             <slot name="stages" @slotchange=${this.handleStagesSlotChange.bind(this)}></slot>
-          </div>
-          
-          <div class="divider"></div>
-          
-          <div class="action ${classMap({
-            "loading": this.loading || this._loading
-          })}"">
-            <slot name="action"></slot>
           </div>
         </div>
       </div>
@@ -156,7 +149,7 @@ export class FrontFormElement extends LitElement {
   }
 
   private updateStagesContainerSize() {
-    const element = this._stageMap[this.stage];
+    const element = this.stageMap[this.stage];
     this._stageSize = {
       x: element.offsetWidth,
       y: element.offsetHeight
@@ -177,7 +170,7 @@ export class FrontFormElement extends LitElement {
       }
     }
 
-    this._stageMap = map;
+    this.stageMap = map;
   }
 
   static styles = css`
@@ -275,19 +268,11 @@ export class FrontFormElement extends LitElement {
     }
     
     .stages.loading {
-      filter: blur(10px);
+      filter: blur(5px);
       
       overflow: clip;
     }
     
-    .action {
-      transition: filter 150ms;
-    }
-    
-    .action.loading {
-      filter: blur(10px);
-    }
-
     .divider {
       width: 100%;
       height: 1px;

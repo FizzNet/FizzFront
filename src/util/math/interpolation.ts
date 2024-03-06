@@ -1,5 +1,5 @@
 import {Color} from "@src/util/style/color.ts";
-import {AnimationFrame} from "@src/util/animation/animation_frame.ts";
+import {AnimationFrame} from "@src/util/animation_frame.ts";
 
 export class Interpolation {
   private static globalAnimationFrame = new AnimationFrame(this.animate.bind(this));

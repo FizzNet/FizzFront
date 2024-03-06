@@ -5,7 +5,7 @@ import "@comps/util/text_bubble.ts";
 
 import sentenceDataset from "@assets/dataset/sentences.json";
 import { repeat } from "lit/directives/repeat.js";
-import {delay} from "@src/util/async/delay.ts";
+import {delay} from "@src/util/delay.ts";
 import "@src/util/math/decls.ts";
 
 type MessageType = {

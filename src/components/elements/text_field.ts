@@ -1,20 +1,20 @@
 import {css, html, LitElement, nothing} from "lit";
 import {customElement, property} from "lit/decorators.js";
 import {styleMap} from "lit/directives/style-map.js";
+import {createRef, ref} from "lit/directives/ref.js";
 
 @customElement("fr-text-field")
 export class FrontTextField extends LitElement {
-  @property()
-  public primary = "var(--e-text-field-primary1)"
+  @property() public primary = "var(--e-text-field-primary1)"
+  @property() public secondary = "var(--e-text-field-secondary1)"
+  @property() public label?: string = undefined;
+  @property() public placeholder = "";
 
-  @property()
-  public secondary = "var(--e-text-field-secondary1)"
+  private inputRef = createRef<HTMLInputElement>();
 
-  @property()
-  public label?: string = undefined;
-
-  @property()
-  public placeholder = "";
+  public get value() {
+    return this.inputRef.value?.value;
+  }
 
   protected renderLabel() {
     if(!this.label) return nothing;
@@ -42,6 +42,8 @@ export class FrontTextField extends LitElement {
             id="input"
             type="text"
             placeholder=${this.placeholder}
+            
+            ${ref(this.inputRef)}
         >
       </div>
     `
