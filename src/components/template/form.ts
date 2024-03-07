@@ -8,6 +8,8 @@ import {FrontFormStageElement} from "@comps/template/form_stage.ts";
 import {classMap} from "lit/directives/class-map.js";
 import {AnimationFrame} from "@src/util/animation_frame.ts";
 
+import "@comps/elements/spinner.ts";
+
 declare global {
   interface HTMLElementEventMap {
     "stage": CustomEvent<FrontFormStageEvent>
@@ -39,30 +41,18 @@ export class FrontFormElement extends LitElement {
 
   public stageMap: Record<number, FrontFormStageElement> = {};
 
-  @state()
-  private _gradientOffset: Number2 = { x: 0, y: 0 };
+  @state() private _gradientOffset: Number2 = { x: 0, y: 0 };
+  @state() private _stageSize?: Number2 = undefined;
+  @state() private _loading = false;
 
-  @state()
-  private _stageSize?: Number2 = undefined;
-
-  @state()
-  private _loading = false;
-
-  @property()
-  public loading = false;
-
-  @property({ type: Number })
-  public stage = 0;
-
-  @property({ type: Number })
-  public transitionDuration = 500;
+  @property({ type: Boolean }) public loading = false;
+  @property({ type: String }) public loadingState?: string;
+  @property({ type: Number }) public stage = 0;
+  @property({ type: Number }) public transitionDuration = 500;
 
   // Queries
-  @query(".box")
-  private queryBox!: HTMLDivElement;
-
-  @query(".stages > slot")
-  private queryStagesSlot!: HTMLSlotElement;
+  @query(".box") private queryBox!: HTMLDivElement;
+  @query(".stages > slot") private queryStagesSlot!: HTMLSlotElement;
 
   protected render(): unknown {
     return html`
@@ -95,7 +85,13 @@ export class FrontFormElement extends LitElement {
             "height": `${this._stageSize ? `${this._stageSize.y}px` : `auto`}`,
             "width": `${this._stageSize ? `${this._stageSize.x}px` : `auto`}`,
           })}>
-            <slot name="stages" @slotchange=${this.handleStagesSlotChange.bind(this)}></slot>
+            <div class="render">
+              <slot class="slot" name="stages" @slotchange=${this.handleStagesSlotChange.bind(this)}></slot>
+            </div>
+            <div class="load">
+              <div class="state ${this.loadingState ? "" : "disabled"}">${this.loadingState ?? ""}</div>
+              <fr-spinner class="spinner" primary="var(--e-spinner-primary2)" secondary="var(--e-spinner-secondary2)"></fr-spinner>
+            </div>
           </div>
         </div>
       </div>
@@ -260,17 +256,71 @@ export class FrontFormElement extends LitElement {
     }
     
     .stages {
-      transition: all 500ms, filter 200ms;
+      transition: all 500ms;
       
       position: relative;
       
       animation: stages-enter 500ms;
     }
     
-    .stages.loading {
-      filter: blur(5px);
+    .stages.loading > .render {
+      transition: all 500ms, filter 200ms;
       
-      overflow: clip;
+      filter: blur(20px);
+      scale: 0.8;
+      opacity: 0;
+      
+      pointer-events: none;
+    }
+    
+    .load {
+      position: absolute;
+      
+      top: 50%;
+      left: 50%;
+      translate: -50% -50%;
+      
+      transition: all 500ms;
+
+      filter: blur(10px);
+      scale: 0.8;
+      opacity: 0;
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .load > .state {
+      text-align: center;
+      
+      transition: height 500ms;
+      
+      padding-bottom: 20px;
+      
+      user-select: none;
+      
+      height: 1em;
+    }
+    
+    .load > .state.disabled {
+      height: 0;
+    }
+    
+    @keyframes animate-state {
+      from {
+        height: 0;
+      }
+      to {
+        height: 1em;
+      };
+    }
+    
+    .stages.loading .load {
+      filter: blur(0);
+      scale: 1;
+      opacity: 1;
     }
     
     .divider {

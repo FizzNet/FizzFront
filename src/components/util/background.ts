@@ -7,6 +7,7 @@ import sentenceDataset from "@assets/dataset/sentences.json";
 import { repeat } from "lit/directives/repeat.js";
 import {delay} from "@src/util/delay.ts";
 import "@src/util/math/decls.ts";
+import {AnimationFrame} from "@src/util/animation_frame.ts";
 
 type MessageType = {
   offset: [number, number],
@@ -26,15 +27,14 @@ export class FrontBackgroundElement extends LitElement {
   private _rootRef = createRef<HTMLDivElement>();
 
   private _messages: MessageType[] = [];
-
   private _datasetCursor = 0;
-
   private _messageCreated = 0;
-
   private _messageLatestCreate = 0;
 
-  private static _maxMessageCount = 10;
+  private _animationFrame = new AnimationFrame(this.fixedAnimate.bind(this));
+  private _active = true;
 
+  private static _maxMessageCount = 10;
   private static _messageLifetime = 3500;
   private static _messageInterval = 500;
   private static _messageBatchInterval = 1000;
@@ -55,9 +55,6 @@ export class FrontBackgroundElement extends LitElement {
   @state()
   private _indicatorOffset: [number, number] = [0, 0];
 
-  @state()
-  private debugTexts = [""];
-
   protected render(): unknown {
     return html`
       <div class="root" ${ref(this._rootRef)}>
@@ -77,7 +74,6 @@ export class FrontBackgroundElement extends LitElement {
           ${repeat(this._messages, (it) => it.id, this.buildMessageTemplate.bind(this))}
         </div>
       </div>
-<!--      <div style="font-size: 1rem; position: absolute; background-color: rebeccapurple; white-space: break-spaces">${this.debugTexts.join("\n")}</div>-->
     `
   }
 
@@ -86,12 +82,14 @@ export class FrontBackgroundElement extends LitElement {
 
     window.addEventListener("click", this.handleClick.bind(this));
     window.addEventListener("mousemove", this.handleMove.bind(this));
+    window.addEventListener("blur", this.handleBlur.bind(this));
+    window.addEventListener("focus", this.handleFocus.bind(this));
   }
 
   protected firstUpdated(_changedProperties: PropertyValues) {
     super.firstUpdated(_changedProperties);
 
-    requestAnimationFrame(this.fixedAnimate.bind(this));
+    this._animationFrame.request();
 
     this.createMessageBatch();
   }
@@ -99,7 +97,7 @@ export class FrontBackgroundElement extends LitElement {
   private fixedAnimate() {
     this.updateIndicatorCurrent();
 
-    requestAnimationFrame(this.fixedAnimate.bind(this));
+    this._animationFrame.request();
   }
 
   private updateIndicatorCurrent() {
@@ -206,7 +204,9 @@ export class FrontBackgroundElement extends LitElement {
   }
 
   private async createMessageBatch() {
-    console.log("Processing message batch");
+    if(!this._active)
+      return;
+
     while (this.activeMessages().length < FrontBackgroundElement._maxMessageCount) {
       this.createMessageAtRandom(true);
 
@@ -235,6 +235,18 @@ export class FrontBackgroundElement extends LitElement {
 
   private handleMove(e: MouseEvent) {
     this._indicatorOffset = [e.x, e.y];
+  }
+
+  private handleBlur() {
+    this._animationFrame.cancel();
+
+    this._active = false;
+  }
+
+  private handleFocus() {
+    this._animationFrame.request();
+
+    this._active = true;
   }
 
   static styles = css`

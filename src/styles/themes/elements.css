@@ -13,4 +13,10 @@
 
   --e-text-field-primary2: var(--c-theme-primary2);
   --e-text-field-secondary2: var(--c-theme-tertiary2);
+
+  --e-spinner-primary1: var(--c-theme-primary);
+  --e-spinner-secondary1: var(--c-theme-quaternary);
+
+  --e-spinner-primary2: var(--c-theme-secondary2);
+  --e-spinner-secondary2: var(--c-theme-tertiary2);
 }

@@ -4,13 +4,14 @@ import { customElement } from "lit/decorators.js";
 import "@comps/util/draw/draw_wave.ts";
 import "@comps/elements/text_field.ts";
 import "@comps/elements/user_identifier_field.ts";
+import "@comps/elements/spinner.ts";
 
 @customElement("fr-route-test")
 export class FrontRouteTestView extends LitElement {
   protected render() {
     return html`
       <div>
-        <fr-user-identifier-field></fr-user-identifier-field>
+        <fr-spinner></fr-spinner>
       </div>
     `
   }

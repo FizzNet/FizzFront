@@ -12,8 +12,9 @@ import {FrontUserIdentifierField} from "@comps/elements/user_identifier_field.ts
 
 @customElement("fr-route-auth-user-signup")
 export class FrontRouteAuthSignUpView extends LitElement {
-  @state()
-  private _stage = 0;
+  @state() private currentStage = 0;
+  @state() private formLoading = false;
+  @state() private formLoadingState?: string;
 
   private refIdentifierField = createRef<FrontUserIdentifierField>();
 
@@ -21,7 +22,8 @@ export class FrontRouteAuthSignUpView extends LitElement {
     const actionNext = () => {
       const field = this.refIdentifierField.value!!;
 
-      this._stage = 1;
+      this.formLoading = true;
+      this.formLoadingState = "Fetching user data";
     }
 
     return html`
@@ -65,14 +67,10 @@ export class FrontRouteAuthSignUpView extends LitElement {
     `
   }
 
-  private handleStage() {
-    window.location.hash = `${this._stage}`;
-  }
-
   protected render(): unknown {
     return html`
       <div class="root">
-        <fr-form class="form" stage=${this._stage} @stage=${this.handleStage}>
+        <fr-form class="form" ?loading=${this.formLoading} loadingState=${this.formLoadingState} stage=${this.currentStage}>
           <span slot="title">Sign up</span>
           <span slot="description">In a minute</span>
           
