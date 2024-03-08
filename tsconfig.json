@@ -20,11 +20,30 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "baseUrl": ".",
+//    "plugins": [
+//      {
+//        "name": "ts-lit-plugin",
+//        "strict": true
+//      }
+//    ],
+
+    "baseUrl": "./",
     "paths": {
+//      "@/*": [
+//        "src/*"
+//      ],
       "@src/*": [
         "src/*"
-      ]
+      ],
+      "@comps/*": [
+        "src/components/*"
+      ],
+      "@routes/*": [
+        "src/components/routes/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
     }
   },
   "include": ["src"]

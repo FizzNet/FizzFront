@@ -1,26 +1,43 @@
-import {LitElement, html, PropertyValues} from 'lit'
+import {LitElement, html, PropertyValues, css} from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { Ref, createRef, ref } from 'lit/directives/ref.js';
-import {initializeRouter} from "./core/routes/routes.ts";
+import { Router } from '@lit-labs/router';
+import {createMainRoutes} from "@src/core/router/routes.ts";
 
 @customElement("fr-main")
 export class FrontMainElement extends LitElement {
-  renderRef: Ref<HTMLInputElement> = createRef();
-  
+  public static instance: FrontMainElement;
+
+  public router = new Router(this, createMainRoutes());
+
+  constructor() {
+    super();
+
+    FrontMainElement.instance = this;
+  }
+
   protected render() {
     return html`
-      <div ${ref(this.renderRef)}></div>
+      <div class="rendered">${this.router.outlet()}</div>
     `
   }
 
   protected firstUpdated(_changedProperties: PropertyValues) {
     super.firstUpdated(_changedProperties);
-
-    const renderElement = this.renderRef.value;
-    if(renderElement) {
-      initializeRouter(renderElement);
-    }
   }
+
+  static styles = css`
+    :host {
+      width: 100vw;
+      height: 100vh;
+      
+      overflow: hidden;
+    }
+    
+    .rendered {
+      width: 100%;
+      height: 100%;
+    }
+  `
 }
 
 declare global {
